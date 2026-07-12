@@ -1,0 +1,69 @@
+# Proyecto anterior (solo se versiona ContentPlatform)
+/Proyecto/
+
+# .NET / ASP.NET Core
+**/bin/
+**/obj/
+**/out/
+**/TestResults/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.nupkg
+*.snupkg
+artifacts/
+
+# Configuracion local y secretos
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/appsettings.*.local.json
+.env
+.env.*
+!.env.example
+
+# Bases de datos y datos locales
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+postgres-data/
+
+# Angular / Node.js
+**/node_modules/
+**/.angular/
+**/dist/
+**/coverage/
+**/.cache/
+**/.npm/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDEs y editores
+.vs/
+.vscode/
+.idea/
+*.code-workspace
+*.DotSettings.user
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs y archivos temporales
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Docker local
+docker-compose.override.yml
+docker-compose.override.yaml
+
