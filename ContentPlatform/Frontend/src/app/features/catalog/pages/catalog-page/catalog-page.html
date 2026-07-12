@@ -1,0 +1,14 @@
+<h1>Catálogo</h1>
+
+@if (contents.length === 0) {
+  <p>No hay contenidos disponibles.</p>
+} @else {
+  <div class="catalog">
+    @for (content of contents; track content.id) {
+      <article class="content">
+        <h2>{{ content.title }}</h2>
+        <p>{{ content.description }}</p>
+      </article>
+    }
+  </div>
+}
