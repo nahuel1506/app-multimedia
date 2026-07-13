@@ -3,8 +3,9 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'catalog',
-        pathMatch: 'full'
+        loadChildren: () =>
+            import('./features/home/home.routes')
+                .then(module => module.homeRoutes)
     },
     {
         path: 'catalog',
@@ -14,6 +15,6 @@ export const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: 'catalog'
+        redirectTo: ''
     }
 ];
