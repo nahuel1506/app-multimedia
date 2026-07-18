@@ -1,10 +1,22 @@
 <article class="content-card">
-    <div class="content-card__image">
-        Sin portada
-    </div>
+    <div class="content-card__media">
+        <span class="content-card__badge">{{ content().type }}</span>
 
-    <div class="content-card__body">
-        <h3>{{ content().title }}</h3>
-        <p>{{ content().description }}</p>
+        @if (content().coverImageUrl) {
+            <img
+                class="content-card__cover"
+                [src]="content().coverImageUrl"
+                [alt]="'Portada de ' + content().title"
+            />
+        } @else {
+            <span class="content-card__placeholder" aria-hidden="true">
+                {{ content().title.charAt(0) }}
+            </span>
+        }
+
+        <div class="content-card__body">
+            <h3>{{ content().title }}</h3>
+            <p>{{ content().description }}</p>
+        </div>
     </div>
 </article>

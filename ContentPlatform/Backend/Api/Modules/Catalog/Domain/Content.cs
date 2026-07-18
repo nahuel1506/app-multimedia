@@ -1,22 +1,36 @@
+using System.Text.RegularExpressions;
+
 namespace Api.Modules.Catalog.Domain;
 
-public class Content
+public abstract class Content
 {
-    public Guid Id { get; private set; }
-    public string Title { get; private set; } = string.Empty;
-    public string Description { get; private set; } = string.Empty;
-    public DateTime CreatedAt { get; private set; }
+    public Guid Id { get; protected set; }
+    public string Title { get; protected set; } = string.Empty;
+    public string Description { get; protected set; } = string.Empty;
+    public string? CoverImageUrl { get; protected set; }
+    public DateTime? ReleaseDate { get; protected set; }
+    public DateTime CreatedAt { get; protected set; }
+    public List<string> Genres { get; protected set; } = [];
 
-    private Content()
+    protected Content()
     {
         // Constructor requerido por EF Core.
+        Genres = [];
     }
 
-    public Content(string title, string description)
+    protected Content(
+        string title,
+        string description,
+        string? coverImageUrl,
+        DateTime? releaseDate,
+        List<string> genres)
     {
         Id = Guid.NewGuid();
         SetTitle(title);
         SetDescription(description);
+        SetCoverImageUrl(coverImageUrl);
+        ReleaseDate = releaseDate;
+        SetGenres(genres);
         CreatedAt = DateTime.UtcNow;
     }
 
@@ -43,5 +57,28 @@ public class Content
             throw new ArgumentException("La descripción es obligatoria.");
 
         Description = description.Trim();
+    }
+
+    private void SetCoverImageUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            CoverImageUrl = null;
+            return;
+        }
+
+        if (!Regex.IsMatch(url, @"^https?:\/\/[\w\-\.]+(\.[\w\-]+)+[/#?]?.*$"))
+            throw new ArgumentException("La URL de la imagen de portada no es válida.");
+
+        CoverImageUrl = url.Trim();
+    }
+
+    private void SetGenres(List<string> genres)
+    {
+        Genres = genres
+            .Where(genre => !string.IsNullOrWhiteSpace(genre))
+            .Select(genre => genre.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
     }
 }

@@ -9,17 +9,15 @@ namespace Api.Modules.Catalog.Controllers;
 public class ContentsController(ContentService service) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<ContentResponse>>> GetAll()
+    public ActionResult<List<ContentResponse>> GetAll()
     {
-        var contents = await service.GetAllAsync();
-
-        return Ok(contents);
+        return Ok(service.GetAll());
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<ContentResponse>> GetById(Guid id)
+    public ActionResult<ContentResponse> GetById(Guid id)
     {
-        var content = await service.GetByIdAsync(id);
+        var content = service.GetById(id);
 
         if (content is null)
             return NotFound();
@@ -27,11 +25,24 @@ public class ContentsController(ContentService service) : ControllerBase
         return Ok(content);
     }
 
-    [HttpPost]
-    public async Task<ActionResult<ContentResponse>> Create(
-        [FromBody] CreateContentRequest request)
+    [HttpPost("movies")]
+    public ActionResult<ContentResponse> CreateMovie(
+        [FromBody] CreateMovieRequest request)
     {
-        var content = await service.CreateAsync(request);
+        var content = service.CreateMovie(request);
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = content.Id },
+            content
+        );
+    }
+
+    [HttpPost("animes")]
+    public ActionResult<ContentResponse> CreateAnime(
+        [FromBody] CreateAnimeRequest request)
+    {
+        var content = service.CreateAnime(request);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -41,11 +52,11 @@ public class ContentsController(ContentService service) : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult<ContentResponse>> Update(
+    public ActionResult<ContentResponse> Update(
         Guid id,
         [FromBody] UpdateContentRequest request)
     {
-        var content = await service.UpdateAsync(id, request);
+        var content = service.Update(id, request);
 
         if (content is null)
             return NotFound();
@@ -54,9 +65,9 @@ public class ContentsController(ContentService service) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public IActionResult Delete(Guid id)
     {
-        var deleted = await service.DeleteAsync(id);
+        var deleted = service.Delete(id);
 
         if (!deleted)
             return NotFound();

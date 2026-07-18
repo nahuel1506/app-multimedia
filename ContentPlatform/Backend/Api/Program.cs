@@ -1,6 +1,8 @@
 using Api.Data;
 using Api.Modules.Catalog.Repositories;
 using Api.Modules.Catalog.Services;
+using Api.Modules.Identity.Repositories;
+using Api.Modules.Identity.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,8 +39,39 @@ builder.Services.AddCors(options =>
 //Content
 builder.Services.AddScoped<ContentRepository>();
 builder.Services.AddScoped<ContentService>();
+builder.Services.AddScoped<ContentImporter>();
+
+//Identity
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<SessionRepository>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddScoped<AuthorizationService>();
 
 var app = builder.Build();
+
+
+//Importar content del csv
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    if (!context.Contents.Any())
+    {
+        var importer = scope.ServiceProvider
+            .GetRequiredService<ContentImporter>();
+
+        var source = Path.Combine(
+            app.Environment.ContentRootPath,
+            "Data",
+            "Import",
+            "MovieLens",
+            "movies.csv");
+
+        importer.ImportContent(source);
+    }
+}
 
 app.UseCors("Frontend");
 
